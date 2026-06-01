@@ -1,45 +1,61 @@
 import bcrypt from "bcrypt";
-
 import db from "../../database.js";
 
 export default async function create(req, res) {
-    const {email, password, is_admin = 0,} = req.body;
+    const {username, email, password, is_admin = 0,} = req.body;
 
-    if (!email || !password) {
+    if (!username || !email || !password) {
         return res.status(400).json({
-            error: "email and password are required",
+            error: "username, email and password are required",
         });
     }
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        db.query(`SELECT id FROM users WHERE email = ? LIMIT 1`, [email], (checkErr, checkResults) => {
-                if (checkErr) {
-                    return res.status(500).json({ error: checkErr.message });
-                }
+        const pool = db.promise();
+        const connection = await pool.getConnection();
 
-                if (checkResults.length > 0) {
-                    return res.status(409).json({
-                        error: "email already exists",
-                    });
-                }
+        try {
+            await connection.beginTransaction();
 
-                db.query(`INSERT INTO users(email,password,is_admin,created_at) VALUES (?,?,?,NOW())`,
-                    [email, hashedPassword, is_admin],
-                    (err, result) => {
-                        if (err) {
-                            return res.status(500).json({ error: err.message });
-                        }
-
-                        return res.status(201).json({
-                            message: "User created",
-                            id: result.insertId,
-                        });
-                    }
-                );
+            const [checkResults] = await connection.query(
+                `SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1`,
+                [username, email]
+            );
+            if (checkResults.length > 0) {
+                await connection.release();
+                return res.status(409).json({ error: "Username or email already exists" });
             }
-        );
+
+            const [insertResult] = await connection.query(
+                `INSERT INTO users(email, username, password, is_admin, created_at) VALUES (?, ?, ?, ?, NOW())`,
+                [email, username, hashedPassword, is_admin]
+            );
+
+            const userId = insertResult.insertId;
+
+            await connection.query(
+                `INSERT INTO user_data (user_id) VALUES (?)`,
+                [userId]
+            );
+
+            await connection.commit();
+            connection.release();
+
+            return res.status(201).json({
+                message: "User created",
+                id: userId,
+            });
+        } catch (innerError) {
+            try {
+                await connection.rollback();
+            } catch (rollbackError) {
+                console.error("Rollback error:", rollbackError);
+            }
+            connection.release();
+            return res.status(500).json({ error: innerError.message });
+        }
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
