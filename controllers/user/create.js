@@ -36,7 +36,7 @@ export default async function create(req, res) {
             const userId = insertResult.insertId;
 
             await connection.query(
-                `INSERT INTO user_data (user_id) VALUES (?)`,
+                `INSERT INTO user_data (user_id, created_at) VALUES (?, NOW())`,
                 [userId]
             );
 
