@@ -1,0 +1,15 @@
+{
+  "name": "tle4-backend",
+  "version": "1.0.0",
+  "description": "Het backend gedeelte voor TLE-4 voor team 4",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
