@@ -1,7 +1,7 @@
 import express from "express";
+import db from "../database.js";
 
 import create from "../controllers/user/create.js";
-import db from "../database.js";
 
 const router = express.Router();
 
