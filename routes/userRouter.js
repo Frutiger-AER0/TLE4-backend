@@ -9,6 +9,14 @@ router.options("/", (req, res) => {
     res.sendStatus(204);
 });
 
+router.get("/", (req, res) => {
+    db.query("SELECT * FROM users", (err, results) => {
+        if (err) return res.status(500).json(err);
+
+        res.json(results);
+    });
+});
+
 router.post("/", create);
 
 export default router;
