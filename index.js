@@ -29,7 +29,7 @@ try {
     //Middelware to support application/x-www-form-urlencoded content-type
     app.use(express.urlencoded({ extended: true }));
 
-    ///app.use("/login", loginRouter);
+    app.use("/login", loginRouter);
     app.use("/users", userRouter)
 
     app.listen(8000, () => console.log('Server running on port 8000'));
