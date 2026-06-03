@@ -1,6 +1,7 @@
 import express from "express";
 
 import create from "../controllers/user/create.js";
+import db from "../database.js";
 
 const router = express.Router();
 
