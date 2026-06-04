@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import loginRouter from "./routes/loginRouter.js";
 import userRouter from "./routes/userRouter.js";
+import protestRouter from "./routes/protestRouter.js";
 
 dotenv.config();
 
@@ -30,7 +31,9 @@ try {
     app.use(express.urlencoded({ extended: true }));
 
     app.use("/login", loginRouter);
-    app.use("/users", userRouter)
+    app.use("/users", userRouter);
+
+    app.use("/protest", protestRouter);
 
     app.listen(8000, () => console.log('Server running on port 8000'));
 } catch (e) {
