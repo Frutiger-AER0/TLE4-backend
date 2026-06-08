@@ -37,8 +37,8 @@ try {
     app.use("/login", loginRouter);
     app.use("/users", userRouter);
 
-    app.use("/protest", protestRouter);
-    app.use("/project", projectRouter);
+    app.use("/protests", protestRouter);
+    app.use("/projects", projectRouter);
 
     app.listen(8000, () => console.log('Server running on port 8000'));
 } catch (e) {
