@@ -1,7 +1,7 @@
 import db from "../../database.js";
 
 export default async function create(req, res) {
-    const {name, description, location, predicted_members, link, start_time,} = req.body;
+    const {name, description, location, predicted_members, card_img, link, start_time,} = req.body;
 
     if (!name || !description || !location || !start_time) {
         return res.status(400).json({
@@ -26,8 +26,8 @@ export default async function create(req, res) {
             }
 
             const [insertResult] = await connection.query(
-                `INSERT INTO protests(name, description, location, predicted_members, created_at) VALUES (?, ?, ?, ?, NOW())`,
-                [name, description, location, predicted_members]
+                `INSERT INTO protests(name, description, location, predicted_members, card_img, created_at) VALUES (?, ?, ?, ?, ?, NOW())`,
+                [name, description, location, predicted_members, card_img]
             );
 
             const protestId = insertResult.insertId;
