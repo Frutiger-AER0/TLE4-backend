@@ -1,11 +1,11 @@
 import db from "../../database.js";
 
 export default async function create(req, res) {
-    const {name, description, location, predicted_members, link, start_time,} = req.body;
+    const {name, card_description, card_img,} = req.body;
 
-    if (!name || !description || !location || !start_time) {
+    if (!name || !card_description) {
         return res.status(400).json({
-            error: "name, description, location and starting time are required",
+            error: "name and description are required",
         });
     }
 
@@ -17,32 +17,27 @@ export default async function create(req, res) {
             await connection.beginTransaction();
 
             const [checkResults] = await connection.query(
-                `SELECT id FROM protests WHERE name = ? AND location = ? LIMIT 1`,
-                [name, location]
+                `SELECT id FROM projects WHERE name = ? LIMIT 1`,
+                [name]
             );
             if (checkResults.length > 0) {
                 await connection.release();
-                return res.status(409).json({ error: "Protest already exists" });
+                return res.status(409).json({ error: "Project already exists" });
             }
 
             const [insertResult] = await connection.query(
-                `INSERT INTO protests(name, description, location, predicted_members, created_at) VALUES (?, ?, ?, ?, NOW())`,
-                [name, description, location, predicted_members]
+                `INSERT INTO projects(name, card_description, card_img, created_at) VALUES (?, ?, ?, NOW())`,
+                [name, card_description, card_img]
             );
 
-            const protestId = insertResult.insertId;
-
-            await connection.query(
-                `INSERT INTO protest_details (protest_id, link, start_time, created_at) VALUES (?, ?, STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%s.%fZ'), NOW())`,
-                [protestId, link, start_time]
-            );
+            const projectId = insertResult.insertId;
 
             await connection.commit();
             connection.release();
 
             return res.status(201).json({
-                message: "Protest created",
-                id: protestId,
+                message: "Project created",
+                id: projectId,
             });
         } catch (innerError) {
             try {
