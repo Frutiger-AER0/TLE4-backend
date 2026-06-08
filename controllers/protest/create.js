@@ -1,12 +1,34 @@
 import db from "../../database.js";
+import path from "path";
+import { encryptPath } from "../../utils/crypto.js";
+import fs from "fs";
 
 export default async function create(req, res) {
-    const {name, description, location, predicted_members, card_img, link, start_time,} = req.body;
+    const {name, description, location, predicted_members, link, start_time,} = req.body;
 
     if (!name || !description || !location || !start_time) {
         return res.status(400).json({
             error: "name, description, location and starting time are required",
         });
+    }
+
+    // determine card_img token
+    let cardImgToken = null;
+    if (req.file) {
+        // public URL path that clients use (served by express.static at /images)
+        // Use forward slashes for URLs
+        const publicUrlPath = `/images/protests/${req.file.filename}`;
+        try {
+            cardImgToken = encryptPath(publicUrlPath);
+        } catch (e) {
+            // cleanup file if encryption fails
+            try { await fs.promises.unlink(req.file.path); } catch (_) {}
+            return res.status(500).json({ error: "Image encryption failed" });
+        }
+    } else if (req.body.card_img) {
+        // if client supplied a card_img string in body (not file), optionally use that
+        // assume it's already an encrypted token or a URL — here we accept the body value
+        cardImgToken = req.body.card_img;
     }
 
     try {
@@ -27,7 +49,7 @@ export default async function create(req, res) {
 
             const [insertResult] = await connection.query(
                 `INSERT INTO protests(name, description, location, predicted_members, card_img, created_at) VALUES (?, ?, ?, ?, ?, NOW())`,
-                [name, description, location, predicted_members, card_img]
+                [name, description, location, predicted_members, cardImgToken]
             );
 
             const protestId = insertResult.insertId;

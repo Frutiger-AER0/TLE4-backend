@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import path from "path";
 import loginRouter from "./routes/loginRouter.js";
 import userRouter from "./routes/userRouter.js";
 import protestRouter from "./routes/protestRouter.js";
@@ -30,6 +31,8 @@ try {
     app.use(express.json());
     //Middelware to support application/x-www-form-urlencoded content-type
     app.use(express.urlencoded({ extended: true }));
+
+    app.use("/images", express.static(path.join(process.cwd(), "public", "images")));
 
     app.use("/login", loginRouter);
     app.use("/users", userRouter);
