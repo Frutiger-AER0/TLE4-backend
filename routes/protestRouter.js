@@ -60,14 +60,18 @@ router.get("/image/:token", (req, res) => {
     const token = req.params.token;
     let filePath;
     try {
-        filePath = decryptPath(token); // returns something like "/images/protests/abc.png"
+        filePath = decryptPath(token);
     } catch (e) {
         return res.status(400).json({ error: "Invalid token" });
     }
-    // convert URL path to absolute filesystem path
-    const abs = path.join(process.cwd(), "public", filePath.replace(/^\/images\//, ""));
+
+    // Extract just the filename from the decrypted path
+    const filename = path.basename(filePath);
+    const abs = path.join(uploadDir, filename);
+
     res.sendFile(abs, (err) => {
         if (err) {
+            console.error(`File not found at: ${abs}`);
             res.status(404).json({ error: "Image not found" });
         }
     });
