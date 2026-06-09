@@ -5,6 +5,7 @@ import loginRouter from "./routes/loginRouter.js";
 import userRouter from "./routes/userRouter.js";
 import protestRouter from "./routes/protestRouter.js";
 import projectRouter from "./routes/projectRouter.js";
+import protestProjectRouter from "./routes/protestProjectRouter.js";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ try {
 
     app.use("/protests", protestRouter);
     app.use("/projects", projectRouter);
+    app.use("/protest_projects", protestProjectRouter);
 
     app.listen(8000, () => console.log('Server running on port 8000'));
 } catch (e) {
