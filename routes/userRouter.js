@@ -4,6 +4,9 @@ import db from "../database.js";
 import create from "../controllers/user/create.js";
 import getUser from "../controllers/user/get.js";
 import getUserDetails from "../controllers/user/getDetails.js";
+import editUser from "../controllers/user/edit.js";
+import editUserDetails from "../controllers/user/editDetails.js";
+import deleteUser from "../controllers/user/delete.js";
 
 const router = express.Router();
 
@@ -22,7 +25,9 @@ router.get("/", (req, res) => {
 
 router.get("/:id", getUser);
 router.get("/:id/details", getUserDetails);
-
+router.put("/:id", editUser);
+router.put("/:id/details", editUserDetails);
+router.delete("/:id", deleteUser);
 router.post("/", create);
 
 export default router;
