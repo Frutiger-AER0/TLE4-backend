@@ -2,6 +2,8 @@ import express from "express";
 import db from "../database.js";
 
 import create from "../controllers/user/create.js";
+import getUser from "../controllers/user/get.js";
+import getUserDetails from "../controllers/user/getDetails.js";
 
 const router = express.Router();
 
@@ -17,6 +19,9 @@ router.get("/", (req, res) => {
         res.json(results);
     });
 });
+
+router.get("/:id", getUser);
+router.get("/:id/details", getUserDetails);
 
 router.post("/", create);
 
