@@ -2,6 +2,7 @@ import express from "express";
 import db from "../database.js";
 
 import create from "../controllers/project/create.js";
+import getProject from "../controllers/project/get.js";
 
 const router = express.Router();
 
@@ -19,5 +20,6 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", create);
+router.get("/:id", getProject);
 
 export default router;

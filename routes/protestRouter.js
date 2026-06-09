@@ -6,6 +6,8 @@ import fs from "fs";
 import { decryptPath } from "../utils/crypto.js";
 
 import create from "../controllers/protest/create.js";
+import getProtest from "../controllers/protest/get.js";
+import getProtestDetails from "../controllers/protest/getDetails.js";
 
 const router = express.Router();
 
@@ -72,5 +74,7 @@ router.get("/image/:token", (req, res) => {
 });
 
 router.post("/", upload.single("card_img"), create);
+router.get("/:id", getProtest);
+router.get("/:id/details", getProtestDetails);
 
 export default router;
