@@ -1,5 +1,4 @@
 import db from "../../database.js";
-import path from "path";
 import { encryptPath } from "../../utils/crypto.js";
 import fs from "fs";
 

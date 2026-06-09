@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import db from "../../database.js";
+import {encryptPath} from "../../utils/crypto.js";
+import fs from "fs";
 
 export default async function create(req, res) {
     const {username, email, password, is_admin = 0,} = req.body;
@@ -8,6 +10,19 @@ export default async function create(req, res) {
         return res.status(400).json({
             error: "username, email and password are required",
         });
+    }
+
+    let pfpImgToken = null;
+    if (req.file) {
+        const publicUrlPath = `/images/profile/${req.file.filename}`;
+        try {
+            pfpImgToken = encryptPath(publicUrlPath);
+        } catch (e) {
+            try { await fs.promises.unlink(req.file.path); } catch (_) {}
+            return res.status(500).json({ error: "Image encryption failed" });
+        }
+    } else if (req.body.card_img) {
+        pfpImgToken = req.body.profile_img;
     }
 
     try {
@@ -36,8 +51,8 @@ export default async function create(req, res) {
             const userId = insertResult.insertId;
 
             await connection.query(
-                `INSERT INTO user_data (user_id, created_at) VALUES (?, NOW())`,
-                [userId]
+                `INSERT INTO user_data (user_id, profile_pfp, created_at) VALUES (?, ?, NOW())`,
+                [userId, pfpImgToken]
             );
 
             await connection.commit();
