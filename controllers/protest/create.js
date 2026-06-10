@@ -3,7 +3,7 @@ import { encryptPath } from "../../utils/crypto.js";
 import fs from "fs";
 
 export default async function create(req, res) {
-    const {name, description, location, predicted_members, link, start_time,} = req.body;
+    const {name, description, location, predicted_members, link, start_time, latitude, longitude} = req.body;
 
     if (!name || !description || !location || !start_time) {
         return res.status(400).json({
@@ -48,7 +48,7 @@ export default async function create(req, res) {
 
             const [insertResult] = await connection.query(
                 `INSERT INTO protests(name, description, location, predicted_members, card_img, created_at) VALUES (?, ?, ?, ?, ?, NOW())`,
-                [name, description, location, predicted_members, cardImgToken]
+                [name, description, location, predicted_members, cardImgToken, latitude, longitude]
             );
 
             const protestId = insertResult.insertId;
