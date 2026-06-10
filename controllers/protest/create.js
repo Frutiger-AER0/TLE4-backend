@@ -47,7 +47,7 @@ export default async function create(req, res) {
             }
 
             const [insertResult] = await connection.query(
-                `INSERT INTO protests(name, description, location, predicted_members, card_img, created_at) VALUES (?, ?, ?, ?, ?, NOW())`,
+                `INSERT INTO protests(name, description, location, predicted_members, card_img, latitude, longitude, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
                 [name, description, location, predicted_members, cardImgToken, latitude, longitude]
             );
 
