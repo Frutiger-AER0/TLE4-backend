@@ -3,11 +3,11 @@ import { encryptPath } from "../../utils/crypto.js";
 import fs from "fs";
 
 export default async function create(req, res) {
-    const {name, description, location, predicted_members, link, start_time, latitude, longitude} = req.body;
+    const {name, subtitle, description, location, predicted_members, link, start_time, latitude, longitude} = req.body;
 
-    if (!name || !description || !location || !start_time) {
+    if (!name || !subtitle || !location || !start_time) {
         return res.status(400).json({
-            error: "name, description, location and starting time are required",
+            error: "name, subtitle, location and starting time are required",
         });
     }
 
@@ -47,15 +47,15 @@ export default async function create(req, res) {
             }
 
             const [insertResult] = await connection.query(
-                `INSERT INTO protests(name, description, location, predicted_members, card_img, latitude, longitude, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
-                [name, description, location, predicted_members, cardImgToken, latitude, longitude]
+                `INSERT INTO protests(name, subtitle, location, predicted_members, card_img, latitude, longitude, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+                [name, subtitle, location, predicted_members, cardImgToken, latitude, longitude]
             );
 
             const protestId = insertResult.insertId;
 
             await connection.query(
-                `INSERT INTO protest_details (protest_id, link, start_time, created_at) VALUES (?, ?, STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%s.%fZ'), NOW())`,
-                [protestId, link, start_time]
+                `INSERT INTO protest_details (protest_id, link, description, start_time, created_at) VALUES (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%s.%fZ'), NOW())`,
+                [protestId, link, description, start_time]
             );
 
             await connection.commit();
