@@ -29,6 +29,10 @@ try {
         next();
     });
 
+    app.on('error', (err) => {
+        console.error('Express error:', err);
+    });
+
     //Middelware to support application/JSON content-type
     app.use(express.json());
     //Middelware to support application/x-www-form-urlencoded content-type
@@ -46,5 +50,6 @@ try {
 
     app.listen(8000, () => console.log('Server running on port 8000'));
 } catch (e) {
-    console.log(e);
+    console.error("Fatal error:", e.message);
+    console.error(e.stack);
 }
