@@ -51,7 +51,7 @@ export default async function create(req, res) {
             const userId = insertResult.insertId;
 
             await connection.query(
-                `INSERT INTO user_data (user_id, profile_pfp, created_at) VALUES (?, ?, NOW())`,
+                `INSERT INTO user_data (user_id, profile_img, created_at) VALUES (?, ?, NOW())`,
                 [userId, pfpImgToken]
             );
 
