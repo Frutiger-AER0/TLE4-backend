@@ -51,5 +51,6 @@ try {
     app.listen(8000, () => console.log('Server running on port 8000'));
 } catch (e) {
     console.error("Fatal error:", e.message);
-    console.error(e.stack);
+    console.error("Stack trace:", e.stack);
+    process.exit(1);
 }
