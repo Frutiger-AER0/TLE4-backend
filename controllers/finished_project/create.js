@@ -16,7 +16,7 @@ export default async function create(req, res) {
     if (req.file) {
         // public URL path that clients use (served by express.static at /images)
         // Use forward slashes for URLs
-        const publicUrlPath = `/images/protests/${req.file.filename}`;
+        const publicUrlPath = `/images/finished_projects/${req.file.filename}`;
         try {
             finishedImgToken = encryptPath(publicUrlPath);
         } catch (e) {

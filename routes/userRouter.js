@@ -46,7 +46,7 @@ const upload = multer({
 });
 
 router.options("/", (req, res) => {
-    res.set("Allow", "GET,POST,OPTIONS");
+    res.set("Allow", "GET,POST,PUT,OPTIONS");
     res.sendStatus(204);
 });
 
